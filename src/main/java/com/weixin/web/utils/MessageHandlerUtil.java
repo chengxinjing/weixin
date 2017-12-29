@@ -28,7 +28,7 @@ public class MessageHandlerUtil {
      */
     public static Map<String,String> parseXml(HttpServletRequest request) throws Exception {
         // 将解析结果存储在HashMap中
-        Map<String,String> map = new HashMap();
+        Map<String,String> map = new HashMap<String, String>();
         // 从request中取得输入流
         InputStream inputStream = request.getInputStream();
         System.out.println("获取输入流");
