@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weixin.web.dao.AdminUserDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.weixin.web.entity.AdminUser">
+		<id column="user_id" property="userId" />
+		<result column="role_id" property="roleId" />
+		<result column="username" property="username" />
+		<result column="password" property="password" />
+		<result column="salt" property="salt" />
+		<result column="locked" property="locked" />
+		<result column="del_flg" property="delFlg" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        user_id AS userId, role_id AS roleId, username, password, salt, locked, del_flg AS delFlg
+    </sql>
+    <!-- 查询所有父级菜单 -->
+   <select id="findPermissionAllParentByUsername" parameterType="String" resultType="com.weixin.web.entity.AdminPermission">
+   	SELECT
+			ap1.id as id,
+			ap1.`name` as name,
+			ap1.parent_id as parentId,
+			ap1.sort as sort,
+			ap1.url as url
+		FROM	
+     admin_permission ap1 WHERE ap1.id IN
+
+       (SELECT
+			ap.parent_id as parentId
+		FROM
+			admin_user a
+		LEFT JOIN admin_role ar ON ar.role_id = a.role_id
+		LEFT JOIN role_permission rp ON rp.role_id = ar.role_id
+		LEFT JOIN admin_permission ap ON rp.permission_id = ap.id
+		WHERE
+			a.username = #{username}
+			and ap.parent_id !=''
+		ORDER BY ap.sort)
+		AND ap1.parent_id =''
+        GROUP BY ap1.id
+        ORDER BY ap1.id	
+   	
+   </select>
+   
+    <!-- 查询所有子级菜单 -->
+   <select id="findPermissionAllChildByUsername" parameterType="String" resultType="com.weixin.web.entity.AdminPermission">
+   		SELECT
+			ap.id as id,
+			ap.`name` as name,
+			ap.parent_id as parentId,
+			ap.sort as sort,
+			ap.url as url
+		FROM
+			admin_user a
+		LEFT JOIN admin_role ar ON ar.role_id = a.role_id
+		LEFT JOIN role_permission rp ON rp.role_id = ar.role_id
+		LEFT JOIN admin_permission ap ON rp.permission_id = ap.id
+		WHERE
+			a.username = #{username}
+			and ap.parent_id !=''
+		ORDER BY ap.sort	
+   	
+   </select>
+   
+   <select id="findfindRoleByUsername" parameterType="String" resultType="com.weixin.web.entity.AdminRole">
+   		SELECT
+   		  T2.ROLE_NAME AS roleName,
+   		  T2.ROLE_ID AS roleId
+   		FROM
+   		 ADMIN_USER T1
+   		LEFT JOIN ADMIN_ROLE T2 ON T2.ROLE_ID = T1.ROLE_ID
+   	    WHERE
+   	      T1.USERNAME=#{username}
+   </select>
+   
+   <select id="searchePageTotal" parameterType="com.weixin.web.form.AdminUserForm" resultType="Integer">
+   		SELECT
+			COUNT(T1.user_id)
+		FROM
+			admin_user T1
+		WHERE
+		  T1.del_flg !='1'
+        <if test="roleId != null and roleId != ''">
+           AND  T1.role_id =#{roleId}
+        </if>
+         <if test="username != null and username != ''">
+           AND  T1.T1.username =#{username}
+        </if>
+         <if test="locked != null and locked != ''">
+           AND  T1.locked =#{locked}
+        </if>
+   </select>
+   
+    <select id="searchePage" parameterType="com.weixin.web.form.AdminUserForm" resultType="com.weixin.web.form.AdminUserForm">
+   		SELECT
+			T1.username as username,
+			T1.role_id as roleId,
+			T1.locked as locked,
+			T1.user_id as userId
+		FROM
+			admin_user T1
+		WHERE
+			T1.del_flg !='1'
+        <if test="roleId != null and roleId != ''">
+           AND  T1.role_id =#{roleId}
+        </if>
+         <if test="username != null and username != ''">
+           AND  T1.T1.username =#{username}
+        </if>
+         <if test="locked != null and locked != ''">
+           AND  T1.locked =#{locked}
+        </if>
+        ORDER BY T1.username
+        <if test="isPage != 0">
+         Limit #{begin},#{pageSize}
+        </if>
+   </select>
+   
+</mapper>

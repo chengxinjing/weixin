@@ -11,7 +11,7 @@
            {	
                "type":"view",
                "name":"搜索",
-               "url":"http://www.baidu.com"
+               "url":"http://2ryd39.natappfree.cc/weixin/login"
             },
             {
                "type":"click",

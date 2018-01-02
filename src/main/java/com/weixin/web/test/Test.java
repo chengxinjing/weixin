@@ -12,7 +12,7 @@ import com.weixin.web.utils.NetWorkHelper;
 
 public class Test {
 	 public static void main(String[] args) throws IOException {
-		  InputStream inputStream =	NetWorkHelper.class.getResourceAsStream("../../../../menu.txt");
+		  InputStream inputStream =	NetWorkHelper.class.getResourceAsStream("/resources/menu.txt");
 		  BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
 		 String text ;
 		 StringBuffer buffer = new StringBuffer();

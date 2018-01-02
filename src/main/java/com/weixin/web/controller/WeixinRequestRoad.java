@@ -6,36 +6,26 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Map;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.weixin.web.utils.MessageHandlerUtil;
-
 /**
- * Servlet implementation class WxRequestInface
+ * 微信端控制层
+ * @author 程新井
+ *
  */
-public class WxRequestInface extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-
+@Controller
+@RequestMapping("weixinRequestRoad")
+public class WeixinRequestRoad {
 	private static final String TOKEN = "chengxinjing";
-
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public WxRequestInface() {
-		super();
-
-	}
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	@GetMapping
+	public void validSignature(HttpServletRequest request,HttpServletResponse response) throws IOException {
 		String signature = request.getParameter("signature");
 		String timeStamp = request.getParameter("timestamp");
 		String nonce = request.getParameter("nonce");
@@ -48,9 +38,30 @@ public class WxRequestInface extends HttpServlet {
 		} else {
 			System.out.println("签名未通过");
 		}
-
 	}
+	@PostMapping
+	public void getWeiXinMessage(HttpServletRequest request,HttpServletResponse response) throws IOException {
+		  request.setCharacterEncoding("UTF-8");
+		  response.setContentType("text/html;charset=UTF-8");
+		   String responseMessage = "";
+			try {
+				Map<String, String> xmlMap = MessageHandlerUtil.parseXml(request);
+				responseMessage = MessageHandlerUtil.buildXml(xmlMap);
 
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			response.getWriter().println(responseMessage);
+	
+}
+	/**
+	 * 排序
+	 * @param token
+	 * @param timeStamp
+	 * @param nonce
+	 * @return
+	 */
 	private String sort(String token, String timeStamp, String nonce) {
 		// 先按字典排序
 		StringBuilder builder = new StringBuilder();
@@ -62,7 +73,11 @@ public class WxRequestInface extends HttpServlet {
 
 		return builder.toString();
 	}
-
+	/**
+	 * sha-1加密
+	 * @param str
+	 * @return
+	 */
 	private String cryptoSha1(String str) {
 		MessageDigest digest;
 		try {
@@ -85,26 +100,4 @@ public class WxRequestInface extends HttpServlet {
 
 		return "";
 	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		 request.setCharacterEncoding("UTF-8");
-		 response.setContentType("text/html;charset=UTF-8");
-		   String responseMessage = "";
-		try {
-			Map<String, String> xmlMap = MessageHandlerUtil.parseXml(request);
-			responseMessage = MessageHandlerUtil.buildXml(xmlMap);
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		response.getWriter().println(responseMessage);
-	}
-
 }

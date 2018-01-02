@@ -54,7 +54,6 @@ public class MessageHandlerUtil {
     public static String buildXml(Map<String,String> map) {
         String result;
         String msgType = map.get("MsgType").toString();
-        System.out.println("MsgType:" + msgType);
         if(msgType.toUpperCase().equals("TEXT")){
             result = buildTextMessage(map, "程新井在学习和总结微信开发了,构建一条文本消息:Hello World!");
         }else{
