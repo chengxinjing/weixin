@@ -83,7 +83,7 @@
             timeToLiveSeconds="7000"
             overflowToDisk="false"
             diskPersistent="false"
-            diskExpiryThreadIntervalSeconds="7200"
+            diskExpiryThreadIntervalSeconds="7000"
     ></cache>
 
 </ehcache>

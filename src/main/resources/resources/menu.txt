@@ -17,6 +17,12 @@
                "type":"click",
                "name":"赞一下我们",
                "key":"V1001_GOOD"
+            },
+            {
+            	"type":"view",
+            	 "name":"让我看一看",
+            	 "url":"http://www.baidu.com"
+            	 
             }]
        }]
  }

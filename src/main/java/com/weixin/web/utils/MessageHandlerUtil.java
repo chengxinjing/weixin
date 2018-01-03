@@ -4,6 +4,7 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.weixin.web.enums.MessageTypeEnum;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
@@ -13,6 +14,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * 消息处理工具类
@@ -53,8 +56,42 @@ public class MessageHandlerUtil {
     // 根据消息类型 构造返回消息
     public static String buildXml(Map<String,String> map) {
         String result;
-        String msgType = map.get("MsgType").toString();
-        if(msgType.toUpperCase().equals("TEXT")){
+        String msgType = map.get("MsgType").toString().toUpperCase();
+        MessageTypeEnum  type=  MessageTypeEnum.valueOf(MessageTypeEnum.class, msgType);
+        switch (type) {
+		case TEXT:
+			result = handleTextMessage(map, "程新井在学习和总结微信开发了,构建一条文本消息:Hello World!");
+			break;
+		case IMAGE:
+			result = handleImageMessage(map);
+			break;
+		case VIDEO:
+		case SHORTVIDEO:
+			result = handleVideoMessage(map);
+			break;
+		case LINK:
+			result = handleLinkMessage(map);
+			break;
+		case LOCATION:
+			result = handleLocationMessage(map);
+			break;
+		case VOICE :
+			result = handleVoiceMessage(map);
+			break;
+		default :
+			 String fromUserName = map.get("FromUserName");
+	            // 开发者微信号
+	            String toUserName = map.get("ToUserName");
+				result = String.format(
+						"<xml>" + "<ToUserName><![CDATA[%s]]></ToUserName>" + "<FromUserName><![CDATA[%s]]></FromUserName>"
+								+ "<CreateTime>%s</CreateTime>" + "<MsgType><![CDATA[text]]></MsgType>"
+								+ "<Content><![CDATA[%s]]></Content>" + "</xml>",
+						fromUserName, toUserName, getUtcTime(), "请回复如下关键词：\n文本\n图片\n语音\n视频\n音乐\n图文");
+	        }
+        return result;
+		}
+        
+        /*if(msgType.toUpperCase().equals("TEXT")){
             result = buildTextMessage(map, "程新井在学习和总结微信开发了,构建一条文本消息:Hello World!");
         }else{
             String fromUserName = map.get("FromUserName");
@@ -65,12 +102,51 @@ public class MessageHandlerUtil {
 							+ "<CreateTime>%s</CreateTime>" + "<MsgType><![CDATA[text]]></MsgType>"
 							+ "<Content><![CDATA[%s]]></Content>" + "</xml>",
 					fromUserName, toUserName, getUtcTime(), "请回复如下关键词：\n文本\n图片\n语音\n视频\n音乐\n图文");
-        }
+        }*/
 
-        return result;
-    }
+       
+  
 
-    /**
+    private static String handleVoiceMessage(Map<String, String> map) {
+    	Set<Entry<String, String>> set  =	map.entrySet();
+		for (Entry<String, String> entry : set) {
+			System.out.println(entry.getKey()+"______"+entry.getValue());
+		}
+		return "";
+	}
+
+	private static String handleLocationMessage(Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static String handleLinkMessage(Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static String handleVideoMessage(Map<String, String> map) {
+		Set<Entry<String, String>> set  =	map.entrySet();
+		for (Entry<String, String> entry : set) {
+			System.out.println(entry.getKey()+"______"+entry.getValue());
+		}
+		return "";
+	}
+
+	private static String handleImageMessage(Map<String, String> map) {
+		Set<Entry<String, String>> set  =	map.entrySet();
+		for (Entry<String, String> entry : set) {
+			System.out.println(entry.getKey()+"______"+entry.getValue());
+		}
+		return "";
+	}
+
+	private static String handleTextMessage(Map<String, String> map, String msg) {
+		
+		return buildTextMessage(map,msg);
+	}
+
+	/**
      * 构造文本消息
      *
      * @param map

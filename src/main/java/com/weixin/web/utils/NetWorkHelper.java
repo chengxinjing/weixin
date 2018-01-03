@@ -4,6 +4,7 @@ import javax.net.ssl.*;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.weixin.web.constance.MyConst;
 import com.weixin.web.entity.AccessToken;
 
 import java.io.BufferedReader;
@@ -11,17 +12,28 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
  * 访问网络用到的工具类
  */
 public final class NetWorkHelper {
 
+	
 	private NetWorkHelper() {
 	}
-
+	/**
+	 * http 和 https 请求
+	 * @param url 请求的 url
+	 * @param data 输出的数据
+	 * @param requestMethod 请求方法
+	 * @return
+	 */
 	public static String sendHttpResponse(String url, String data, String requestMethod) {
 		String result = "";
+		OutputStream outputStream =null;
+		InputStream inputStream =null;
+		BufferedReader bufferedReader =null;
 		try {
 			URL Url = new URL(url);//将String url转换成 URL
 			HttpsURLConnection connection = (HttpsURLConnection) Url.openConnection();//获取连接
@@ -45,19 +57,21 @@ public final class NetWorkHelper {
 			}
 			// 获取输出流
 			if (!data.isEmpty()) {
-				OutputStream outputStream = connection.getOutputStream();
+				outputStream = connection.getOutputStream();
 				outputStream.write(data.getBytes());
 				outputStream.flush();
 				outputStream.close();
 			}
 			// 获取输入流
-			InputStream inputStream = connection.getInputStream();
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
+			inputStream = connection.getInputStream();
+		    bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
 			StringBuffer buffer = new StringBuffer();
 			while ((result = bufferedReader.readLine()) != null) {
 				buffer.append(result);
 			}
 			result = buffer.toString();
+			inputStream.close();
+			bufferedReader.close();
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -65,34 +79,7 @@ public final class NetWorkHelper {
 
 		return result;
 	}
-
-	/**
-	 * 获取access_token
-	 * 
-	 * @author 程新井
-	 * @param appId
-	 * @param appSecret
-	 * @return
-	 * @2017年12月29日下午5:14:50
-	 */
-	public static AccessToken getAccessToken(String appId, String appSecret) {
-		/**
-		 * 接口地址为https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET，其中grant_type固定写为client_credential即可。
-		 */
-		String Url = String.format(
-				"https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", appId,
-				appSecret);
-		// 此请求为https的get请求，返回的数据格式为{"access_token":"ACCESS_TOKEN","expires_in":7200}
-		String result = sendHttpResponse(Url);
-		System.out.println("获取到的access_token=" + result);
-		// 使用FastJson将Json字符串解析成Json对象
-		JSONObject json = JSON.parseObject(result);
-		AccessToken token = new AccessToken();
-		token.setToken(json.getString("access_token"));
-		token.setExpires_in(json.getInteger("expires_in"));
-		return token;
-	}
-
+	
 	public static String sendHttpResponse(String url) {
 		return sendHttpResponse(url, "", "");
 	}
@@ -100,4 +87,5 @@ public final class NetWorkHelper {
 	public static String sendHttpResponse(String url, String requestMethod) {
 		return sendHttpResponse(url, "", requestMethod);
 	}
+	
 }

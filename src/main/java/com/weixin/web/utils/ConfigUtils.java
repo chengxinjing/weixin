@@ -6,27 +6,33 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-public class ConfigUtils {
+public final class ConfigUtils {
 
 	private static Logger logger = Logger.getLogger(ConfigUtils.class);
-	private static final String SUFFIX = ".properties";
-	private static final String PREFIX = "/resources/";
-	private static Map<String, String> map = new HashMap<>();
+	private String SUFFIX = ".properties";
+	private String PREFIX = "/resources/";
+	private Map<String, String> map = new HashMap<>();
 	private static ConfigUtils configUtilInstance = null;
 
-	private ConfigUtils() {
-		
+	private ConfigUtils(String fileName) {
+		//初始化map
+		fillMap(fileName);
 	}
-
-	public static ConfigUtils getInstance() {
+	/**
+	 * 获取实例
+	 * @param fileName  //文件的名字
+	 * @return
+	 */
+	public static ConfigUtils getInstance(String fileName) {
 		if (null == configUtilInstance) {
 			synchronized (ConfigUtils.class) {
 				if (null == configUtilInstance) {
-					configUtilInstance = new ConfigUtils();
+					configUtilInstance = new ConfigUtils(fileName);
 				}
 			}
 		}
@@ -39,7 +45,7 @@ public class ConfigUtils {
 	 * @param key
 	 * @return
 	 */
-	public static String getValue(String key) {
+	private  String getValue(String key) {
 		// 先从map查询
 		String value = map.get(key);
 		if (value == null) {
@@ -48,8 +54,11 @@ public class ConfigUtils {
 		return value;
 	}
 
+	public Map<String, String> getMap() {
+		return map;
+	}
 	// 填充map
-	private static void clipseMap(String fileName) {
+	private  void fillMap(String fileName) {
 		InputStream inputStream = ConfigUtils.class.getResourceAsStream(PREFIX + fileName + SUFFIX);
 		Properties properties = new Properties();
 		try {
@@ -65,14 +74,6 @@ public class ConfigUtils {
 
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-	}
-
-	public static void main(String[] args) {
-		ConfigUtils.clipseMap("weixin");
-		Set<Entry<String, String>> set =  map.entrySet();
-		for (Entry<String, String> entry : set) {
-			System.out.println(entry.getKey()+"_______"+entry.getValue());
 		}
 	}
 }

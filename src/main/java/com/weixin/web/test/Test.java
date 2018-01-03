@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.weixin.web.entity.AccessToken;
+import com.weixin.web.utils.AccessTokenUtil;
 import com.weixin.web.utils.NetWorkHelper;
 
 public class Test {
@@ -19,7 +20,7 @@ public class Test {
 		 while( (text = bufferedReader.readLine())!=null) {
 			 buffer.append(text);
 		 }
-		 AccessToken accessToken = NetWorkHelper.getAccessToken("wx42b1d8b6d9df0332","44fe52b96116620dfc001b93bf41050e");
+		 AccessToken accessToken = AccessTokenUtil.getAccessToken("wx42b1d8b6d9df0332","44fe52b96116620dfc001b93bf41050e");
 		 String menu = buffer.toString();
 		 JSONObject jsonObject = JSON.parseObject(menu);
 	     System.out.println(jsonObject.toJSONString());
