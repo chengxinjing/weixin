@@ -27,10 +27,10 @@ public class RequestTest {
 		 * System.out.println(entry.getKey()+"_______"+entry.getValue()); }
 		 */
 		// System.out.println(ResourceBundle.getBundle("resources.weixin").getString("jiangxi"));
-		// apiUtil.createMenu();
-		JSONObject jsonObject = apiUtil.uploadMedia("E:\\workspace\\weixin\\src\\main\\resources\\resources\\123.png",
+		 //apiUtil.createMenu();
+		JSONObject jsonObject = apiUtil.uploadMedia("E:\\workspace\\weixin\\src\\main\\resources\\resources\\123.JPG",
 				"image");
-		apiUtil.downloadMedia("D:/" + jsonObject.getString("media_id") + ".png", jsonObject.getString("media_id"));
+		apiUtil.downloadMedia("E:\\person\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp1\\wtpwebapps\\weixin\\static\\123.JPG", jsonObject.getString("media_id"));
 		/*
 		 * MessageTypeEnum type= MessageTypeEnum.valueOf(MessageTypeEnum.class,
 		 * "VIDEO"); System.out.println(type.toString());
