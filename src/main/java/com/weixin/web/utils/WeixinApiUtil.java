@@ -12,6 +12,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -74,7 +77,7 @@ public final class WeixinApiUtil {
 	 * 获得token值
 	 * @return
 	 */
-	private  String getToken() {
+	public  String getToken() {
 		return accessTokenUtil.getAccessTokenFromCache("access_token").getToken();
 	}
 	/**

@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +24,8 @@ import com.weixin.web.utils.MessageHandlerUtil;
 @Controller
 @RequestMapping("weixinRequestRoad")
 public class WeixinRequestRoad {
+	@Autowired
+	private MessageHandlerUtil messageHandlerUtil;
 	private static final String TOKEN = "chengxinjing";
 	@GetMapping
 	public void validSignature(HttpServletRequest request,HttpServletResponse response) throws IOException {
@@ -45,9 +48,9 @@ public class WeixinRequestRoad {
 		  response.setContentType("text/html;charset=UTF-8");
 		   String responseMessage = "";
 			try {
-				Map<String, String> xmlMap = MessageHandlerUtil.parseXml(request);
-				responseMessage = MessageHandlerUtil.buildXml(xmlMap);
-
+				Map<String, String> xmlMap = messageHandlerUtil.parseXml(request);
+				String realPath = request.getSession().getServletContext().getRealPath("/static/");
+				responseMessage = messageHandlerUtil.buildXml(xmlMap,realPath);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

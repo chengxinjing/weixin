@@ -8,5 +8,6 @@
 </head>
 <body>
   <p>江西上饶</p>
+  <img alt="" src="../static/LE7IesLxw4V4GN4cg9w1puadgTPUtPxhNyWOnT0QfA3CCxJ05Qn_wJj3pVu2A3r6.JPG">
 </body>
 </html>
